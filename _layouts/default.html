@@ -31,6 +31,14 @@
       {%- if site.plainwhite.tagline -%}
       <p class="tagline">{{ site.plainwhite.tagline }}</p>
       {%- endif -%}
+      {% if site.plainwhite.education %}
+      <div class="education">
+        {% for entry in site.plainwhite.education %}
+        <p>{{ entry | escape }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <p class="profile-details">{{ site.plainwhite.location | escape }} · {{ site.plainwhite.birth_year }}년생</p>
       </div>
       {% capture footer %}
       {%- if site.plainwhite.social_links != '' -%}
