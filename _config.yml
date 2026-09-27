@@ -53,7 +53,9 @@ plainwhite:
 # - about.md
 
 # Build settings
-theme: plainwhite
+# Theme files are included locally in _layouts, _includes, _sass, and assets.
+exclude:
+  - index.markdown
 
 plugins:
   - jekyll-seo-tag
