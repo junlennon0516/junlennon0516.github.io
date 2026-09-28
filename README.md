@@ -1,222 +1,47 @@
-# plainwhite
+# 장형준 · Infra Operation Portfolio
 
-Simplistic jekyll portfolio-style theme for writers.
+실무 인프라 운영 경험을 중심으로 구성한 Jekyll 기반 GitHub Pages 포트폴리오입니다. 기존 Plainwhite 테마를 수정했습니다.
 
-**Demo**: [samarsault.com](https://samarsault.com)
+## 구성
 
-![plainwhite theme preview](/screenshot.png)
+- `index.md`: 홈 진입점
+- `_layouts/home.html`: 실무 운영 → 개발 프로젝트 → 클라우드 실습 순서의 홈
+- `_posts/2026-09-28-*.md`: 실무 사례 3편, 클라우드 실습 계획 1편
+- `_drafts/development-project-operations.md`: 개발 프로젝트 작성 초안(기본 블로그 빌드에서 제외)
+- `about.markdown`: 소개와 기록 원칙
+- `_sass/portfolio.scss`: 포트폴리오 스타일
 
-## Installation on Github Pages
+기존 `index.html`, `index.markdown`과 Jekyll 예시 글은 파일을 보존하되 `_config.yml`에서 빌드 제외했습니다. 홈 출력 파일의 중복을 방지하기 위해 새 홈 내용은 `index.md`에서만 관리합니다.
 
-Add this line to your site's `_config.yml`:
+## 글 추가
 
-```yaml
-remote_theme: samarsault/plainwhite-jekyll
+`_posts/YYYY-MM-DD-slug.md`에 `layout: post`, `title`, `date`, `section`, `order`, `status`, `period`, `excerpt`를 설정합니다. `section`은 `operations`, `projects`, `labs` 중 하나이며 각 홈 섹션에는 `order` 순으로 표시됩니다.
+
+실무 글은 문제 상황 → 확인 과정 → 조치 또는 계획 → 결과·검증 범위 → 배운 점으로 작성합니다. 계획을 완료 실적으로 바꾸기 전에 실제 결과를 확인하고 개인 담당 범위를 보완합니다. 개발 초안은 실제 프로젝트 근거를 채운 뒤 날짜를 붙여 `_posts`로 이동합니다.
+
+## 로컬 확인
+
+Windows에서 `gem`을 찾을 수 없다는 오류가 나오면 [RubyInstaller](https://rubyinstaller.org/downloads/)의 Ruby+Devkit을 먼저 설치합니다. Ruby 실행 경로(PATH) 등록을 포함하고 설치 후 PowerShell을 새로 엽니다. 필요하면 `ridk install`에서 개발 도구를 구성합니다.
+
+```powershell
+ruby -v
+gem -v
+gem install bundler
 ```
 
-## Installation
+Ruby와 Bundler가 설치된 환경에서:
 
-Add this line to your Jekyll site's `Gemfile`:
-
-```ruby
-gem "plainwhite"
+```sh
+bundle install
+bundle exec jekyll serve
 ```
 
-And add this line to your Jekyll site's `_config.yml`:
+기본 주소는 `http://localhost:4000`입니다. 초안 확인이 필요한 경우에만 `bundle exec jekyll serve --drafts`를 사용합니다.
 
-```yaml
-theme: plainwhite
-```
+## 공개 범위
 
-And then execute:
+원본 사내 PDF, CSV 목록, 내부 IP·장비명·계정·폴더명 및 관리 화면은 저장소에 포함하지 않습니다. 공개 글에는 익명화한 설명만 사용합니다. 클라우드 실습은 현재 계획 상태입니다.
 
-    $ bundle
+## 테마
 
-Or install it yourself as:
-
-    $ gem install plainwhite
-
-## Usage
-
-The "plainwhite" key in \_config.yml is used to customize the theme data.
-
-```yaml
-plainwhite:
-  name: Adam Denisov
-  tagline: Developer. Designer
-  date_format: "%b %-d, %Y"
-
-  social_links:
-    twitter: samarsault
-    github: samarsault
-    linkedIn: in/samarsault # format: locale/username
-```
-
-**Updating Placeholder Image**
-
-The placeholder portfolio image can be replaced by the desired image by placing it as `assets/portfolio.png` in your jekyll website, or by changing the following line in `_config.yaml`
-
-```yaml
-plainwhite:
-  portfolio_image:  "assets/portfolio.png" # the path from the base directory of the site to the image to display (no / at the start)
-```
-
-To use a different image for dark mode, e.g. with different colors that work better in dark mode, add a `portfolio_image_dark` entry in addition to the `portfolio_image`.
-
-```yaml
-plainwhite:
-  portfolio_image:      "assets/portfolio.png"
-  portfolio_image_dark: "assets/portfolio_dark.png"
-```
-
-**Comments (Disqus)**
-
-Comments on posts can be enabled by specifying your disqus_shortname under plainwhite in `_config.yml`. For example,
-
-```yaml
-plainwhite:
-  disqus_shortname: games
-```
-
-**Google Analytics**
-
-It can be enabled by specifying your analytics id under plainwhite in `_config.yml`
-
-```yaml
-plainwhite:
-  analytics_id: "< YOUR ID >"
-```
-
-**Sitemap**
-
-It can be toggled by the following line to under plainwhite in `_config.yml`
-
-```yaml
-plainwhite:
-  sitemap: true
-```
-
-**Excerpts**
-
-Excerpts can be enabled by adding the following line to your `_config.yml`
-
-```yaml
-show_excerpts: true
-```
-
-**Layouts**
-
-- Home
-- Page
-- Post
-
-**Navigation**
-
-Navigation can be enabled by adding the following line to your `_config.yml`
-
-```yaml
-plainwhite:
-  navigation:
-    - title: My Work
-      url: "/my-work"
-    - title: Resume
-      url: "/resume"
-```
-
-**Mobile**
-
-By default, Plainwhite places the sidebar (logo, name, tagline etc.) above the content on mobile (narrow screens).
-To condense it (moving some things to the bottom of the page and making the rest smaller) so it takes up less space, add the following to your `_config.yml`:
-
-```yaml
-plainwhite:
-  condensed_mobile:
-    - home
-    - post
-    - page
-```
-
-This chooses which layouts (types of page) should be condensed on mobile screens. E.g. if you want everything but the landing page to be condensed, remove `home` from the list. This option does not affect rendering on wider screens.
-
-**Dark mode**
-
-Dark mode can be enabled by setting the `dark_mode` flag in your `_config.yml`
-
-The website will check the OS preferred color scheme and set the theme accordingly, the preference will then be saved in a cookie
-
-```yaml
-plainwhite:
-  dark_mode: true
-```
-
-![plainwhite dark theme previe](/dark.png)
-
-**Multiline tagline**
-
-Tagline can be multiline in this way
-
-```yaml
-plainwhite:
-  tagline: |
-  First Line. 
-
-  Second Line. 
-
-  Third Line.
-```
-
-**Search-bar**
-
-Search-bar can be enabled by adding the following line to `config.yml`
-
-```yaml
-plainwhite:
-  search: true
-```
-
-Search is powered by [Simple-Jekyll-Search](https://github.com/christian-fei/Simple-Jekyll-Search) Jekyll plugin. A `search.json` containing post meta and contents will be generated in site root folder. Plugin JavaScript will then match for posts based on user input. More info and `search.json` customization documentation can be found in plugin repository.
-
-**Base URL**
-
-You can specify a custom base URL (eg. example.com/blog/) by adding the following line to `_config.yaml`. Note that there is no trailing slash on the URL.
-
-```yaml
-baseurl: "/blog"
-```
-
-**Language**
-
-You can set the `lang` attribute of the `<html>` tag on your pages by changing the following line in `_config.yml`:
-
-```yaml
-plainwhite:
-  html_lang: "en"
-```
-
-[See here for a full list of available language codes](https://www.w3schools.com/tags/ref_country_codes.asp)
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/samarsault/plainwhite-jekyll. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## Development
-
-To set up your environment to develop this theme, run `bundle install`.
-
-Your theme is setup just like a normal Jekyll site! To test your theme, run `bundle exec jekyll serve` and open your browser at `http://localhost:4000`. This starts a Jekyll server using your theme. Add pages, documents, data, etc. like normal to test your theme's contents. As you make modifications to your theme and to your content, your site will regenerate and you should see the changes in the browser after a refresh, just like normal.
-
-When your theme is released, only the files in `_layouts`, `_includes`, `_sass` and `assets` tracked with Git will be bundled.
-To add a custom directory to your theme-gem, please edit the regexp in `plainwhite.gemspec` accordingly.
-
-## Donation
-If this project help you reduce time to develop, you can give me a cup of coffee :) 
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/thelehhman)
-
-## License
-
-The theme is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## More themes
-
-- [Texture](https://github.com/samarsault/texture)
+[Plainwhite](https://github.com/samarsault/plainwhite-jekyll), MIT License. 원본 라이선스는 `LICENSE.txt`에 보존합니다.

@@ -1,48 +1,37 @@
 ---
 ---
 
-window.onload = function () {
-    var $searchbar = document.getElementById('searchbar');
-    var $searchResults = document.getElementById('search-results');
-
-    if (!$searchbar || !$searchResults)
-        return;
+document.addEventListener('DOMContentLoaded', function () {
+    var input = document.getElementById('searchbar');
+    var results = document.getElementById('search-results');
+    var group = document.getElementById('posts-labelgroup');
+    if (!input || !results || !group) return;
 
     SimpleJekyllSearch({
-        searchInput: $searchbar,
-        resultsContainer: $searchResults,
+        searchInput: input,
+        resultsContainer: results,
         json: '{{ "/search.json" | relative_url }}',
-        searchResultTemplate: '<a href="{url}" target="_blank">{title}</a>',
-        noResultsText: ''
+        searchResultTemplate: '<a href="{url}">{title}</a>',
+        noResultsText: '검색 결과가 없습니다.'
     });
 
-    /* hack ios safari unfocus */
-    if (/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent))
-        document.body.firstElementChild.tabIndex = 1;
-
-    var $labelGroup = document.querySelector(".posts-labelgroup");
-    var $postLabel = document.getElementById("posts-label");
-    var labelWidth = $postLabel.scrollWidth;
-
-    $postLabel.style.width = labelWidth + "px";
-
-    $labelGroup.addEventListener("click", function (e) {
-        $searchResults.style.display = null;
-        $postLabel.style.width = "0";
-        $labelGroup.setAttribute("class", "posts-labelgroup focus-within");
-        $searchbar.focus();
-        e.stopPropagation();
-    }, false);
-
-    $labelGroup.addEventListener("mouseleave", function () {
-        document.body.onclick = searchCollapse;
+    function openResults() {
+        results.style.display = '';
+        group.classList.add('focus-within');
+    }
+    function closeResults() {
+        results.style.display = 'none';
+        group.classList.remove('focus-within');
+    }
+    input.addEventListener('focus', openResults);
+    input.addEventListener('input', openResults);
+    input.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeResults();
     });
-
-    var searchCollapse = function (e) {
-        $searchResults.style.display = "none";
-        $labelGroup.setAttribute("class", "posts-labelgroup");
-        $postLabel.style.width = labelWidth + "px";
-        document.body.onclick = null;
-    };
-}
-
+    document.addEventListener('click', function (event) {
+        if (!group.contains(event.target)) closeResults();
+    });
+    group.addEventListener('focusout', function (event) {
+        if (!group.contains(event.relatedTarget)) closeResults();
+    });
+});

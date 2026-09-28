@@ -1,68 +1,51 @@
-title: Keep Pushing!
-author: GitHub User
+title: "장형준 | Infra Operation Portfolio"
+author: 장형준
 email: jun030516@gmail.com
-description: > # this means to ignore newlines until "show_exerpts:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
-show_excerpts: true # set to true to show excerpts on the homepage
-
-# Minima date format
-# refer to http://shopify.github.io/liquid/filters/date/ if you want to customize this
+description: "서버 장애 대응, NAS 데이터 보존, 가상화 환경 정비를 기록하는 장형준의 인프라 운영 포트폴리오입니다."
+url: "https://junlennon0516.github.io"
+baseurl: ""
+lang: ko-KR
+timezone: Asia/Seoul
+show_excerpts: true
 sass:
   sass_dir: _sass
 plainwhite:
   name: 장형준
-  tagline: Cloud/Infra Engineer.
+  tagline: "Cloud / Infra Engineer"
   education:
     - "2017~2020 : 한국디지털미디어고 웹프로그래밍과 졸업"
     - "2023~2026 : 동국대학교 컴퓨터·AI학부 재학 중"
-    - "2026.07~ : 테크빌교육(주) 정보보안팀 인턴"
+    - "2026.07~ : 정보보안팀 인턴"
   location: "South Korea / 대한민국"
   birth_year: 2001
-  date_format: "%b %-d, %Y"
-  sitemap: true # set to true to generate sitemap.xml content
-  search: true # set to true to enable searchbar
-  dark_mode: true # set to true to add dark mode toggle
-  portfolio_image: "assets/portfolio.png" # the path from the base directory of the site to the image to display (no / at the start)
-  html_lang: "kr" # set the lang attribute of the <html> tag for the pages. See here for a list of codes: https://www.w3schools.com/tags/ref_country_codes.asp
-  condensed_mobile:
-    #- home
-    - page
-    - post
-  # generate social links in footer
+  date_format: "%Y.%m.%d"
+  sitemap: true
+  search: true
+  dark_mode: true
+  portfolio_image: "assets/portfolio.png"
+  html_lang: "ko"
+  condensed_mobile: [home, page, post]
   social_links:
-    twitter: samarsault
-    github:  samarsault
-    linkedIn: in/samarsault
-    #dribbble: jekyll
-    #flickr:   jekyll
-    #instagram: jekyll
-    #pinterest: jekyll
-    #youtube: jekyll
-    #facebook: jekyll
-    #soundcloud: jekyll
-    #telegram: jekyll
-    #gitlab: jekyll
-    #email: jekyll
-
-    # Mastodon instances
-    # mastodon:
-    # - username: jekyll
-    #   instance: example.com
-    # - username: jekyll2
-    #   instance: example.com
-
-# If you want to link only specific pages in your header, uncomment
-# this and add the path to the pages in order as they should show up
-#header_pages:
-# - about.md
-
-# Build settings
-# Theme files are included locally in _layouts, _includes, _sass, and assets.
+    github: junlennon0516
+  navigation:
+    - title: 포트폴리오
+      url: /
+    - title: 실무 운영 경험
+      url: /#operations
+    - title: 개발 프로젝트
+      url: /#projects
+    - title: 클라우드 실습
+      url: /#labs
+    - title: 소개
+      url: /about/
 exclude:
+  - index.html
   - index.markdown
-
+  - README.md
+  - _posts/2019-03-23-welcome-to-jekyll.markdown
+  - Gemfile
+  - Gemfile.lock
+  - plainwhite.gemspec
+  - vendor
 plugins:
   - jekyll-seo-tag
-#  - jekyll-feed

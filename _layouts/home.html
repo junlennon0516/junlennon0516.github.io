@@ -1,57 +1,62 @@
 ---
 layout: default
 ---
+<div class="portfolio-home">
+  <header class="portfolio-hero">
+    <p class="eyebrow">FIELD NOTES / 장형준</p>
+    <h1>서비스를 이해하고,<br>인프라를 운영합니다.</h1>
+    <p class="hero-subtitle">Infra Operation Portfolio</p>
+    <div class="hero-intro">{{ content }}</div>
+    <p class="skill-line">Server · Storage · Linux · Virtualization</p>
+    <a class="hero-cta" href="#operations">실무 사례 살펴보기 <span aria-hidden="true">↗</span></a>
+  </header>
 
-{%- if page.title -%}
-  <h1 class="page-heading">{{ page.title }}</h1>
-{%- endif -%}
+  <nav class="section-nav" aria-label="포트폴리오 목차">
+    <a href="#operations">01 실무 운영</a>
+    <a href="#projects">02 개발 프로젝트</a>
+    <a href="#labs">03 클라우드 실습</a>
+  </nav>
 
-{{ content }}
+  <section class="portfolio-section" id="operations">
+    <p class="eyebrow">01 / OPERATIONS</p>
+    <h2>실무 인프라 운영 경험</h2>
+    <p class="section-description">문제 상황부터 확인 과정, 조치 결과까지. 현장에서의 판단을 중심으로 정리했습니다.</p>
+    {% assign operation_posts = site.posts | where: "section", "operations" | sort: "order" %}
+    {% for post in operation_posts %}{% include portfolio-card.html post=post %}{% endfor %}
+  </section>
 
-{%- if site.posts.size > 0 -%}
-  <ul class="posts">
-    <li class="posts-labelgroup" id="posts-labelgroup">
-      <h1 id="posts-label">posts</h1>
-      {% if site.plainwhite.search %}
-      <div class="search-container">
-        <div class="search-section">
-          <i class="icon-search"></i>
-          <input type="text" name="search" id="searchbar" autocomplete="off" aria-label="search in posts">
-        </div>
-        <div class="search-results" id="search-results" data-placeholder="No Results" style="display: none;"></div>
-      </div>
-      {% endif %}
-    </li>
+  <section class="portfolio-section competency-section" aria-labelledby="competency-title">
+    <h2 id="competency-title">경험으로 설명하는 역량</h2>
+    <dl class="competency-list">
+      <div><dt>Server / Linux</dt><dd>전원·링크·인터페이스·서비스를 나누어 장애 상태 확인</dd></div>
+      <div><dt>Storage / Backup</dt><dd>파일 목록 비교, 보존 데이터 분류, 이관 후 공간 확보</dd></div>
+      <div><dt>VM / Change</dt><dd>호스트·VM 현황 조사와 단계별 이관·복구 계획 검토</dd></div>
+    </dl>
+  </section>
 
-    {%- for post in site.posts -%}
-      <li>
-        {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
-        <a class="post-link" href="{{ post.url | relative_url }}">
-          <h2 class="post-title">{{ post.title | escape }}</h2>
-        </a>
-        <div class="post-meta">
-          <div class="post-date">
-            <i class="icon-calendar"></i>
-            {{ post.date | date: date_format }}
-          </div>
-          {%- if post.categories.size > 0-%}
-          <ul class="post-categories">
-            {%- for tag in post.categories -%}
-            <li>{{ tag }}</li>
-            {%- endfor -%}
-          </ul>
-          {%- endif -%}
-        </div>
-        <div class="post">
-          {%- if site.show_excerpts -%}
-            {{ post.excerpt }}
-          {%- endif -%}
-        </div>
-      </li>
-    {%- endfor -%}
-  </ul>
+  <section class="portfolio-section" id="projects">
+    <p class="eyebrow">02 / PROJECTS</p>
+    <h2>개발 프로젝트</h2>
+    <p class="section-description">서비스 구현 경험을 구조, 배포 환경, 문제 해결 관점으로 연결합니다.</p>
+    {% assign project_posts = site.posts | where: "section", "projects" | sort: "order" %}
+    {% for post in project_posts %}{% include portfolio-card.html post=post %}{% else %}
+    <div class="empty-state"><span class="status-badge">정리 중</span><h3>개발 경험에서 운영 관점으로</h3><p>프로젝트별 역할, 서비스 구조와 실제 검증 기록을 정리한 뒤 공개할 예정입니다.</p></div>
+    {% endfor %}
+  </section>
 
-  <!-- <p class="feed-subscribe"><svg class="svg-icon orange">
-		<use xlink:href="{{ '/assets/minima-social-icons.svg#rss' | relative_url }}"></use>
-	</svg><a href="{{ "/feed.xml" | relative_url }}">Subscribe</a></p> -->
-{%- endif -%}
+  <section class="portfolio-section" id="labs">
+    <p class="eyebrow">03 / CLOUD LAB</p>
+    <h2>클라우드·컨테이너 실습</h2>
+    <p class="section-description">온프레미스의 점검 경험을 클라우드 환경으로 확장합니다. 계획과 실행 결과를 구분해 기록합니다.</p>
+    {% assign lab_posts = site.posts | where: "section", "labs" | sort: "order" %}
+    {% for post in lab_posts %}{% include portfolio-card.html post=post %}{% endfor %}
+  </section>
+
+  {% if site.plainwhite.search %}
+  <div class="posts-labelgroup portfolio-search" id="posts-labelgroup">
+    <h2 id="posts-label">글 검색</h2>
+    <div class="search-container"><div class="search-section"><i class="icon-search" aria-hidden="true"></i><input type="search" id="searchbar" autocomplete="off" placeholder="NAS, Linux, VM…" aria-label="포트폴리오 글 검색"></div><div class="search-results" id="search-results" data-placeholder="검색 결과가 없습니다" style="display:none;"></div></div>
+  </div>
+  {% endif %}
+  <p class="publication-note">실무 사례는 내부 식별 정보를 익명화했습니다. 완료된 조치와 검토·계획 단계의 내용을 구분합니다.</p>
+</div>

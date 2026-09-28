@@ -1,0 +1,6 @@
+<article class="case-card">
+  <div class="card-meta"><span class="status-badge">{{ include.post.status | escape }}</span><span>{{ include.post.period | escape }}</span></div>
+  <h3><a href="{{ include.post.url | relative_url }}">{{ include.post.title | escape }}</a></h3>
+  <p>{{ include.post.excerpt | strip_html }}</p>
+  <ul class="card-tags" aria-label="관련 기술">{% for tag in include.post.tags %}<li>{{ tag | escape }}</li>{% endfor %}</ul>
+</article>

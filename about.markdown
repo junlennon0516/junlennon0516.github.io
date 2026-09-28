@@ -1,18 +1,25 @@
 ---
 layout: page
-title: About
+title: 소개
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+# 장형준
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+개발 경험을 바탕으로 서비스 구조를 이해하고, 정보보안팀 인턴 업무를 통해 서버·스토리지·가상화 환경을 경험하고 있습니다. 인프라 운영에서 확인한 문제와 판단 과정을 기록합니다.
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+## 포트폴리오를 읽는 순서
 
+1. [실무 운영 경험]({{ '/#operations' | relative_url }}): 서버 장애 대응, NAS 데이터 보존 및 저장공간 확보, 가상화 서버 정비 계획
+2. [개발 프로젝트]({{ '/#projects' | relative_url }}): 서비스 구조와 문제 해결 과정 중심으로 정리 예정
+3. [클라우드 실습]({{ '/#labs' | relative_url }}): AWS·컨테이너 운영 실습 계획과 향후 검증 기록
 
-[jekyll-organization]: https://github.com/jekyll
+## 기록 원칙
+
+실제로 확인한 상태와 원인 추정을 구분하고, 완료된 작업과 계획 단계의 작업을 나눠 작성합니다. 팀 작업 기록을 정리할 때 단독 수행이나 전체 작업 총괄로 확대해서 표현하지 않습니다.
+
+실무 문서의 회사명, 내부 주소, 장비명, 사용자·폴더명 및 관리 화면은 공개하지 않습니다. 공개 글에는 문제를 이해하는 데 필요한 맥락과 결과만 남깁니다.
+
+## 링크
+
+[GitHub 프로필](https://github.com/junlennon0516)

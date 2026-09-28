@@ -3,9 +3,9 @@ layout: default
 ---
 {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
 <div class="post-container">
-  <a class="post-link" href="{{ page.url | relative_url }}">
-    <h2 class="post-title">{{ page.title | escape }}</h2>
-  </a>
+  <a class="back-link" href="{{ '/' | relative_url }}#{{ page.section | default: 'operations' }}">← 포트폴리오로 돌아가기</a>
+  <h1 class="post-title">{{ page.title | escape }}</h1>
+  {% if page.status %}<p class="article-status"><span class="status-badge">{{ page.status | escape }}</span> <span>{{ page.period | escape }}</span></p>{% endif %}
   <div class="post-meta">
     <div class="post-date"><i class="icon-calendar"></i>{{ page.date | date: date_format }}</div>
     {%- if page.categories.size > 0 -%}

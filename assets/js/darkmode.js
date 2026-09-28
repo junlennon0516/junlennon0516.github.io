@@ -9,13 +9,16 @@ function toggleDarkMode() {
         setCookie('theme', 'dark');
         body.classList.add(DARK_CLASS);
     }
+    document.querySelectorAll('.dark-mode-toggle').forEach(function (toggle) {
+        toggle.checked = body.classList.contains(DARK_CLASS);
+    });
 }
 
 function getCookie(name) {
     var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
     return v ? v[2] : null;
 }
-function setCookie(name, value, days) {
+function setCookie(name, value, days = 365) {
     var d = new Date;
     d.setTime(d.getTime() + 24*60*60*1000*days);
     document.cookie = name + "=" + value + ";path=/;SameSite=strict;expires=" + d.toGMTString();
