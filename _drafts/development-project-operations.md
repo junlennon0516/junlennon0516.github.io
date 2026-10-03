@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "웹 서비스 개발 경험을 운영 관점으로 정리하기"
+title: "웹 서비스 구현·배포와 운영 검증 기록 (작성 초안)"
 categories: [개발 프로젝트]
 tags: [Web, Deployment, Database]
 section: projects

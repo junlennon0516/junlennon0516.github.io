@@ -106,3 +106,222 @@ a:focus-visible, input:focus-visible { outline: 3px solid #54a890; outline-offse
 }
 
 .switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; z-index: 1; cursor: pointer; }
+
+// Make the entire project card a visible, keyboard-accessible link.
+a.case-card {
+  display: block;
+  background: #f2f5f8;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background-color .2s, border-color .2s, box-shadow .2s;
+}
+a.case-card:hover { background: #e7edf4; text-decoration: none; }
+a.case-card:focus-visible { outline: 3px solid var(--section-accent); outline-offset: 4px; }
+a.case-card h3 { color: var(--ink); }
+.dark a.case-card { background: #252e38; }
+.dark a.case-card:hover { background: #303d4b; }
+@media (prefers-reduced-motion: reduce) { a.case-card { transition: none; } }
+
+// Use the same filled green treatment as the main call-to-action.
+.portfolio-section a.case-card,
+.dark .portfolio-section a.case-card {
+  background: #236653;
+  border: 1px solid #236653;
+  border-radius: 6px;
+  color: #fff;
+}
+.portfolio-section a.case-card:hover,
+.dark .portfolio-section a.case-card:hover {
+  background: #2b7963;
+  border-color: #2b7963;
+}
+.portfolio-section a.case-card h3,
+.dark .portfolio-section a.case-card h3 { color: #fff; }
+.portfolio-section a.case-card p,
+.dark .portfolio-section a.case-card p { color: #e1f0e9; }
+.portfolio-section a.case-card .card-tags li,
+.dark .portfolio-section a.case-card .card-tags li {
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, .22);
+}
+.portfolio-section a.case-card .status-badge {
+  background: rgba(255, 255, 255, .16);
+  color: #fff;
+}
+.portfolio-section a.case-card h3::after { content: " ↗"; font-size: .85em; }
+
+// Dark mode gives every element a background; let card contents share the fill.
+.portfolio-section a.case-card *,
+.dark .portfolio-section a.case-card * {
+  background-color: transparent;
+}
+.portfolio-section a.case-card .card-tags li,
+.dark .portfolio-section a.case-card .card-tags li,
+.portfolio-section a.case-card .status-badge,
+.dark .portfolio-section a.case-card .status-badge {
+  background-color: rgba(255, 255, 255, .12);
+}
+
+// Section-specific card colors in both themes.
+.section-operations { --card-fill: #24568f; --card-hover: #2e68aa; }
+.section-labs { --card-fill: #963d40; --card-hover: #ad484c; }
+.section-projects { --card-fill: #eed078; --card-hover: #f5db90; }
+.portfolio-section a.case-card,
+.dark .portfolio-section a.case-card {
+  background-color: var(--card-fill);
+  border-color: var(--card-fill);
+}
+.portfolio-section a.case-card:hover,
+.dark .portfolio-section a.case-card:hover {
+  background-color: var(--card-hover);
+  border-color: var(--card-hover);
+}
+.section-projects a.case-card h3,
+.dark .section-projects a.case-card h3 { color: #292516; }
+.section-projects a.case-card p,
+.dark .section-projects a.case-card p { color: #453c24; }
+.section-projects a.case-card .card-tags li,
+.dark .section-projects a.case-card .card-tags li,
+.section-projects a.case-card .status-badge,
+.dark .section-projects a.case-card .status-badge {
+  color: #292516;
+  background-color: rgba(41, 37, 22, .09);
+  border-color: rgba(41, 37, 22, .18);
+}
+
+.portfolio-section a.case-card .card-tags li,
+.dark .portfolio-section a.case-card .card-tags li {
+  background-color: #171717;
+  color: #fff;
+  border-color: #171717;
+}
+
+.portfolio-section a.case-card .card-tags li,
+.dark .portfolio-section a.case-card .card-tags li {
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+// Compact capability cards with clear labels and room for each description.
+.competency-section .competency-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  border: 0;
+  margin: 24px 0 0;
+}
+.competency-section .competency-list > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid #d8e3ef;
+  border-radius: 12px;
+  background: #edf3fa;
+}
+.competency-section .competency-list > div:last-child {
+  grid-column: 1 / -1;
+  border: 1px solid #d8e3ef;
+}
+.competency-section .competency-list dt {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #24568f;
+  background: transparent;
+}
+.competency-section .competency-list dd {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #46576b;
+  background: transparent;
+}
+.dark .competency-section .competency-list > div {
+  background: #202b38;
+  border-color: #34485f;
+}
+.dark .competency-section .competency-list dt { background: transparent; color: #a9d0ff; }
+.dark .competency-section .competency-list dd { background: transparent; color: #d0d9e4; }
+@media (max-width: 640px) {
+  .competency-section .competency-list { grid-template-columns: 1fr; }
+  .competency-section .competency-list > div { padding: 18px; }
+}
+
+// Tighten the page frame and connect capabilities with the section navigation.
+.portfolio-home { margin-top: 24px; padding-left: 0; }
+.portfolio-hero { padding: 18px 0 12px; }
+.portfolio-hero h1 { font-size: clamp(22px, 2.35vw, 34px); margin-bottom: 0; }
+.competency-section { padding-top: 20px; }
+.competency-section .competency-list { margin-top: 16px; }
+.section-nav {
+  border: 0;
+  margin-top: 18px;
+  padding: 0;
+  gap: 10px;
+}
+.section-nav a,
+.dark .section-nav a {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #edf3fa;
+  color: #24568f;
+  border: 1px solid #d8e3ef;
+}
+.dark .section-nav a { background: #202b38; color: #a9d0ff; border-color: #34485f; }
+.section-nav a:hover { text-decoration: underline; }
+@media (min-width: 1025px) {
+  main { margin: 0 24px; max-width: none; }
+  main .about { width: 260px; }
+  main .content { margin-left: 280px; max-width: calc(100% - 280px); }
+  .portfolio-home { margin: 24px 0 60px; }
+  .portfolio-hero h1 { white-space: nowrap; }
+}
+
+@media (min-width: 1025px) {
+  main { margin: 0 auto; width: calc(100% - 120px); max-width: 1440px; }
+  main .about { width: 280px; }
+  main .content { margin-left: 320px; max-width: calc(100% - 320px); }
+  .portfolio-home { margin-right: 24px; margin-left: 16px; }
+}
+
+.competency-section .competency-list > div:last-child { grid-column: auto; }
+
+// Keep code and text diagrams legible, including nested syntax-highlight spans.
+.post pre,
+.dark .post pre {
+  background: #e8eef5;
+  color: #182c42;
+  border: 1px solid #bacbdd;
+  border-radius: 10px;
+  padding: 22px;
+  line-height: 1.6;
+}
+.post pre code,
+.post pre code span,
+.dark .post pre code,
+.dark .post pre code span {
+  background: transparent;
+  color: #182c42;
+}
+.post .highlighter-rouge > .highlight,
+.dark .post .highlighter-rouge > .highlight { background: transparent; }
+
+.navigation ul { display: flex; flex-direction: column; gap: 9px; }
+.navigation ul a,
+.navigation ul li:last-child a {
+  padding: 10px 16px;
+  border: 1px solid #d8e3ef;
+  border-radius: 12px;
+  background: #edf3fa;
+  color: #24568f;
+  text-decoration: none;
+}
+.dark .navigation ul a,
+.dark .navigation ul li:last-child a {
+  background: #202b38;
+  border-color: #34485f;
+  color: #a9d0ff;
+}
+.navigation ul a:hover { background: #dce8f6; }
+.dark .navigation ul a:hover { background: #2c3d50; }

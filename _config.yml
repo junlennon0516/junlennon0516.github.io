@@ -15,12 +15,12 @@ plainwhite:
   education:
     - "2017~2020 : 한국디지털미디어고 웹프로그래밍과 졸업"
     - "2023~2026 : 동국대학교 컴퓨터·AI학부 재학 중"
-    - "2026.07~ : 정보보안팀 인턴"
+    - "2026.07~ : 테크빌교육(주) 정보보안팀 인턴"
   location: "South Korea / 대한민국"
   birth_year: 2001
   date_format: "%Y.%m.%d"
   sitemap: true
-  search: true
+  search: false
   dark_mode: true
   portfolio_image: "assets/portfolio.png"
   html_lang: "ko"

@@ -1,95 +1,73 @@
 ---
 layout: post
-title: "전원 복구 이후 서버·NAS 접속 장애를 단계별로 확인한 경험"
+title: "전원 장애 후 Linux 서버·Docker 서비스·NAS 복구"
 date: 2026-09-28 09:00:00 +0900
 categories: [실무 운영]
-tags: [Server, Linux, Network, Docker, NAS]
+tags: [Linux, Docker, NAS, Storage, Troubleshooting, Network]
 section: operations
+show_tech_stack: true
 order: 1
-status: 조치 완료
 period: 2026.08.18
 permalink: /operations/power-outage-recovery/
-excerpt: "같은 접속 불가 현상에서도 전원, 물리 링크, 네트워크 인터페이스, 컨테이너 상태를 나누어 원인을 확인하고 복구했습니다."
+excerpt: "전원 복구 후 접속되지 않던 서버를 전원·링크·네트워크·컨테이너 순서로 점검했습니다. 물리 서버 3대를 조치하고 웹서비스와 NAS 3대의 정상 접속을 확인했습니다."
 ---
 
-> 전기 작업 이후 발생한 서버·NAS 장애 대응 기록입니다. 내부 장비명, IP, 계정 및 화면은 공개용으로 익명화했습니다.
+<style>
+.incident-evidence { margin: 1.5rem 0 2rem; }
+.incident-evidence img { display: block; max-width: 100%; max-height: 520px; width: auto; height: auto; margin: 0 auto; border-radius: 8px; }
+.incident-evidence figcaption { margin-top: .7rem; font-size: .9em; line-height: 1.7; }
+</style>
 
-### 한눈에 보는 사례
+전산실 전원 복구 후 일부 서버와 NAS가 자동으로 정상화되지 않았습니다. 장비별로 **전원, LAN 링크, Linux 인터페이스, Docker 컨테이너 상태**를 확인하고, 복구 후 실제 서비스 접속까지 점검한 사례입니다.
 
-| 항목 | 내용 |
-|---|---|
-| 상황 | 전산실 전원 차단·복구 이후 일부 장비 미기동 및 접속 불가 |
-| 확인 범위 | 물리 서버, Linux 네트워크, Docker 서비스, NAS |
-| 접근 방법 | 전원 → 물리 링크 → 네트워크 → 서비스 순으로 확인 범위 분리 |
-| 기록된 결과 | 물리 서버 3대 조치, 컨테이너 웹서비스 정상 접속, NAS 3대 수동 기동 및 접속 확인 |
+| 대상 | 확인·조치 결과 |
+| --- | --- |
+| 물리 서버 3대 | LAN 링크, 전원 상태, 네트워크 인터페이스 확인 및 조치 |
+| Docker 기반 내부 웹서비스 | 중지된 Redis·서비스 컨테이너 기동 후 정상 접속 확인 |
+| NAS 3대 | 수동 기동 후 정상 접속 확인 |
 
-## 1. 문제 정의
+## 장애 상황과 점검 순서
 
-전기 작업 중 전산실 전원이 차단됐습니다. 전원 공급이 재개된 뒤 대부분의 장비는 자동으로 기동됐지만, 일부 서버는 Ping과 SSH에 응답하지 않았고 NAS 일부는 전원이 꺼진 상태로 남아 있었습니다. 전원 복구 후에도 추가 전원 영향이 발생한 이력이 있어 현장 상태를 함께 확인해야 했습니다.
+건물 전기 작업 중 차단기를 내려 전산실 전체 전원이 차단됐습니다. 전원이 다시 공급되자 대부분의 장비는 자동 기동됐지만, 일부 서버는 Ping·SSH에 응답하지 않았고 NAS 3대는 꺼진 상태였습니다. 전원 복구 이후 추가 차단 이력도 확인돼 현장 점검이 필요했습니다.
 
-이때 확인할 대상은 단순히 “켜져 있는 서버”가 아니라 사용자가 접속하는 서비스까지였습니다. 실제로 SSH 접속은 되지만 웹페이지가 열리지 않는 서버도 있었습니다.
+점검은 **전원 → 물리 링크 → 네트워크 → 컨테이너 → 서비스 접속** 순서로 진행했습니다. 같은 ‘접속 불가’ 증상이라도 장비마다 확인해야 할 지점이 달랐기 때문입니다.
 
-## 2. 환경과 제약
+## 1. 원격 접속이 안 되는 서버: 전원과 LAN 링크 확인
 
-대상은 물리 서버, Linux 네트워크, Docker 기반 내부 서비스, NAS가 섞인 온프레미스 환경이었습니다. 모든 장비가 같은 방식으로 자동 복구되지 않았고, 원격 접속이 되지 않는 장비는 현장에서 LED와 케이블 상태를 확인해야 했습니다.
+가상화 호스트는 Ping·SSH에 응답하지 않았고, 후면 LAN 포트의 Link LED가 꺼져 있었습니다. 케이블을 다른 포트에 연결해 링크가 올라오는지 확인한 뒤 기존 포트에 다시 연결했습니다. 이후 기존 포트의 Link LED가 정상화됐습니다.
 
-장애 당시 서비스별 중단 시간과 기준 복구 시간은 별도로 계측되지 않았습니다. 따라서 이 글에서는 확인할 수 있는 장비 상태와 조치 결과만 다루고, 특정 하드웨어 고장이나 상세 네트워크 원인을 단정하지 않았습니다.
+<figure class="incident-evidence"><a href="{{ '/assets/projects/power-outage-recovery/lan-link.png' | relative_url }}" target="_blank" rel="noopener"><img src="{{ '/assets/projects/power-outage-recovery/lan-link.png' | relative_url }}" alt="서버 후면 LAN 포트와 Link LED" loading="lazy" /></a><figcaption>LAN 연결과 Link LED를 확인한 현장 사진입니다. 케이블 재연결 후 기존 포트의 링크 정상화는 작업 기록으로 확인했습니다.</figcaption></figure>
 
-## 3. 설계 선택
+API 서버도 Ping·SSH에 응답하지 않았지만, 현장에서는 전원 상태 LED가 빨간색으로 표시됐습니다. 서버를 종료한 뒤 재기동했고, 전원 상태 LED가 파란색으로 바뀐 것을 확인했습니다.
 
-접속 불가라는 공통 증상만 보고 한 가지 원인을 가정하지 않았습니다. **전원 → 물리 링크 → 네트워크 인터페이스 → 프로세스·컨테이너 → 사용자 서비스** 순서로 계층을 나누어 확인했습니다.
+<figure class="incident-evidence"><a href="{{ '/assets/projects/power-outage-recovery/server-power.png' | relative_url }}" target="_blank" rel="noopener"><img src="{{ '/assets/projects/power-outage-recovery/server-power.png' | relative_url }}" alt="재기동 후 서버 전원 상태 LED" loading="lazy" /></a><figcaption>재기동 후 전원 상태 LED를 확인한 사진입니다. LAN 링크 문제와 전원 상태 문제를 각각 나누어 조치했습니다.</figcaption></figure>
 
-이 순서를 선택한 이유는 하위 계층이 정상이어야 다음 계층을 의미 있게 점검할 수 있기 때문입니다. 또한 SSH 접속 여부와 웹서비스 정상 여부를 별도 기준으로 두어, 호스트 복구를 서비스 복구로 오인하지 않도록 했습니다.
+## 2. DB 서버: 미사용 네트워크 인터페이스 정리
 
-## 4. 구현
+DB 서버는 기존에 `eno2`를 사용하고 있었지만, 재부팅 과정에서 물리적으로 연결되지 않은 `eno1`도 활성화됐습니다. 미사용 인터페이스인 `eno1`을 비활성화하고, 실제 사용하는 `eno2`의 연결 상태를 확인했습니다.
 
-| 대상 | 관찰한 상태 | 조치 및 확인 |
-|---|---|---|
-| 가상화 호스트 | Ping·SSH 불가, LAN Link LED 미점등 | 다른 LAN 포트에서 링크 확인 후 기존 포트에 재연결, Link 정상화 확인 |
-| API 서버 | Ping·SSH 불가, 전원 상태 LED 이상 표시 | 전원 종료 후 재기동, 상태 LED 정상화 확인 |
-| DB 서버 | 사용하지 않고 물리 연결도 없는 인터페이스가 활성화됨 | 미사용 인터페이스 비활성화 후 기존 사용 인터페이스 상태 확인 |
-| 컨테이너 기반 내부 서비스 | SSH 정상, 웹 접속 불가, 일부 컨테이너 Exited | 캐시·서비스 컨테이너 기동 후 웹서비스 포트와 실제 접속 확인 |
-| NAS 3대 | 전원 OFF | 수동 기동 후 접속 확인 |
+<figure class="incident-evidence"><a href="{{ '/assets/projects/power-outage-recovery/network-interface.png' | relative_url }}" target="_blank" rel="noopener"><img src="{{ '/assets/projects/power-outage-recovery/network-interface.png' | relative_url }}" alt="eno1 비활성화 및 eno2 연결 상태" loading="lazy" /></a><figcaption>조치 후 eno1은 꺼짐, eno2는 켜짐·1000 Mb/s 연결 상태로 표시됩니다. 상세 라우팅 원인이나 영구 설정 변경까지 검증한 기록은 없습니다.</figcaption></figure>
 
-### 물리 링크와 전원 상태
+## 3. SSH는 되지만 웹서비스가 안 열리는 서버: 컨테이너 복구
 
-원격 접속이 불가능한 장비는 현장에서 전원 및 LAN 포트 LED를 확인했습니다. 가상화 호스트는 LAN 링크가 올라오지 않았고, API 서버는 전원 상태 표시가 정상이 아니었습니다. 두 장비 모두 원격에서는 “접속 불가”였지만 실제 확인할 지점은 달랐습니다.
+내부 웹서비스 서버는 SSH 접속이 정상이었지만 웹페이지는 열리지 않았습니다. `docker ps -a`로 확인한 결과 Redis와 웹서비스 컨테이너는 `Exited`, MariaDB는 실행 중이었습니다. 호스트 접속과 애플리케이션 상태를 별도로 확인해야 하는 상황이었습니다.
 
-포트 재연결이나 재기동으로 상태가 복구됐다는 기록만으로 NIC 고장이나 특정 하드웨어 결함을 확정할 수는 없습니다. 이 사례에서는 관찰한 상태와 복구 조치를 구분해 기록했습니다.
+<figure class="incident-evidence"><a href="{{ '/assets/projects/power-outage-recovery/containers-before.png' | relative_url }}" target="_blank" rel="noopener"><img src="{{ '/assets/projects/power-outage-recovery/containers-before.png' | relative_url }}" alt="복구 전 Docker 컨테이너 상태" loading="lazy" /></a><figcaption>Redis와 웹서비스 컨테이너는 Exited (255), MariaDB는 Up 상태였습니다. 종료 코드는 관찰한 상태이며, 이 화면만으로 종료 원인을 단정할 수는 없습니다.</figcaption></figure>
 
-### Linux 네트워크 상태
+Redis 컨테이너를 먼저 기동하고, 이어 웹서비스 컨테이너를 기동했습니다. 두 컨테이너가 `Up` 상태로 바뀐 뒤 서비스 포트와 웹페이지 접속을 확인했습니다.
 
-DB 서버는 기존에 사용하던 인터페이스 외에 미사용 인터페이스가 재부팅 과정에서 활성화된 상태였습니다. 미사용 인터페이스를 비활성화하고 실제 사용 인터페이스의 네트워크 상태를 확인했습니다. 영구 설정 변경이나 상세 라우팅 원인까지 검증한 기록은 없어, 그 범위까지 해결했다고 확장하지 않았습니다.
+<figure class="incident-evidence"><a href="{{ '/assets/projects/power-outage-recovery/containers-after.png' | relative_url }}" target="_blank" rel="noopener"><img src="{{ '/assets/projects/power-outage-recovery/containers-after.png' | relative_url }}" alt="Redis 및 웹서비스 컨테이너 기동 후 상태" loading="lazy" /></a><figcaption>Redis를 먼저 기동하고 웹서비스를 기동한 뒤 모두 Up 상태로 확인했습니다. 웹페이지 정상 접속은 작업 기록에 남아 있으며, 이번 첨부 자료에는 접속 화면이 포함되지 않았습니다.</figcaption></figure>
 
-### 호스트와 컨테이너 상태
+## 4. 전원이 꺼진 NAS: 수동 기동과 접속 확인
 
-내부 서비스 서버는 SSH에 정상 접속됐습니다. 반면 웹페이지는 열리지 않았고 캐시·서비스 컨테이너는 `Exited` 상태였습니다. DB 컨테이너는 실행 중이었으므로, 호스트 전체가 내려간 상황과 구분할 수 있었습니다.
+현장에서 NAS 3대가 전원 OFF 상태인 것을 확인했습니다. 각 장비를 수동으로 기동하고, 기동 완료 후 접속 상태를 확인했습니다.
 
-중지된 컨테이너를 기동한 뒤 웹서비스 포트와 웹페이지 접속을 확인했습니다. 프로세스 기동 여부를 확인하는 데서 끝내지 않고 실제 사용 경로까지 확인한 부분이 핵심입니다.
+## 복구 결과와 배운 점
 
-## 5. 검증
+작업 기록상 접속 불가 물리 서버 3대의 상태 확인과 조치를 완료했습니다. 중지된 컨테이너를 기동한 뒤 내부 웹서비스가 정상 접속됐고, NAS 3대도 수동 기동 후 접속을 확인했습니다. 전산실 서버·네트워크 장비의 정상 동작도 확인했습니다.
 
-작업 기록상 접속 불가 물리 서버 3대의 상태 확인 및 조치를 완료했고, 내부 웹서비스와 NAS 3대의 정상 접속을 확인했습니다. 전산실 서버·네트워크 장비의 정상 동작도 확인했습니다.
+이 사례에서 중요했던 점은 **복구 완료의 기준을 실제 서비스 접속까지 잡는 것**이었습니다. 전원이 켜져 있거나 SSH가 된다는 사실만으로 사용자가 이용하는 서비스까지 정상이라고 판단할 수 없었습니다.
 
-정확한 서비스별 중단 시간이나 복구 시간 지표는 별도로 집계돼 있지 않아 수치 성과로 표현하지 않았습니다.
+다음 전원 작업에 대비해 장비 영향 범위를 사전에 공유하고, 서버·NAS의 자동 기동 정책, 재부팅 후 네트워크 설정, 컨테이너 자동 시작 정책을 점검할 필요가 있습니다. 이 항목들은 후속 개선 과제이며 이번에 적용 완료한 조치는 아닙니다.
 
-검증 기준은 장비마다 달랐습니다.
-
-- 물리 서버: 전원 상태와 Ping·SSH 접속
-- 네트워크: 사용 인터페이스의 활성 상태와 통신
-- 컨테이너 서비스: 컨테이너 실행, 서비스 포트, 실제 웹 접속
-- NAS: 전원 기동 후 관리·파일 서비스 접속
-
-## 6. 개선점
-
-아래 항목은 이번에 모두 적용한 조치가 아니라, 같은 상황을 대비하기 위한 개선 과제입니다.
-
-- 전원에 영향을 주는 작업은 사전에 관련 담당자에게 공유하고 장비 영향 범위를 확인하기
-- 서버·NAS의 전원 복구 후 자동 기동 정책 확인하기
-- 재부팅 후 네트워크 인터페이스 설정이 의도대로 적용되는지 확인하기
-- 컨테이너 자동 시작 정책과 서비스 의존 관계 점검하기
-- 장비 기동, 네트워크 연결, 사용자 서비스 접속을 구분한 복구 체크리스트 만들기
-
-장애 대응에서는 동일한 증상을 하나의 원인으로 묶지 않는 것이 중요했습니다. 물리 상태, 네트워크 연결, 애플리케이션 상태를 나누어 보면 다음 확인 대상을 좁힐 수 있습니다. 또한 복구 완료의 기준을 전원 LED나 SSH 접속만으로 잡지 않고 서비스 접속까지 확장해야 한다는 점을 배웠습니다.
-
-*근거: 2026년 8월 전원 작업 이후 서버 접속 이슈 조치 기록. 원본 내부 문서는 공개하지 않습니다.*
+*사내 장애 조치 기록을 바탕으로 정리했습니다. 서비스별 중단·복구 시간은 별도로 계측되지 않아 시간 단축 성과로 표현하지 않았습니다.*

@@ -3,19 +3,24 @@ layout: default
 ---
 <div class="portfolio-home">
   <header class="portfolio-hero">
-    <p class="eyebrow">FIELD NOTES / 장형준</p>
-    <h1>서비스를 이해하고,<br>인프라를 운영합니다.</h1>
-    <p class="hero-subtitle">Infra Operation Portfolio</p>
-    <div class="hero-intro">{{ content }}</div>
-    <p class="skill-line">Server · Storage · Linux · Virtualization</p>
-    <a class="hero-cta" href="#operations">실무 사례 살펴보기 <span aria-hidden="true">↗</span></a>
+    <p class="eyebrow">Porfolio</p>
+    <h1>사용자의 일상을 안정적으로 뒷받침하는 Infra Engineer</h1>
   </header>
 
-  <nav class="section-nav" aria-label="포트폴리오 목차">
-    <a class="nav-operations" href="#operations">01 실무 운영</a>
-    <a class="nav-labs" href="#labs">02 클라우드 실습</a>
-    <a class="nav-projects" href="#projects">03 개발 프로젝트</a>
-  </nav>
+
+  <section class="portfolio-section competency-section" aria-labelledby="competency-title">
+    <h2 id="competency-title">Infra Engineer가 되기 위해 쌓아온 역량</h2>
+    <dl class="competency-list">
+      <div><dt>Server · Storage · Linux</dt><dd>서버·NAS 장애 대응, Linux 환경 구축, 데이터 보존과 저장공간 관리</dd></div>
+      <div><dt>Monitoring · Troubleshooting</dt><dd>전원·네트워크·서비스 상태 점검과 로그·자원 사용량을 통한 장애 확인</dd></div>
+      <div><dt>On-Premise · Virtualization</dt><dd>전산실 관리, 물리 서버·RAID 구성, VirtualBox 테스트 호스트 구축과 VM 이전 검증</dd></div>
+      <div><dt>Cloud · Container</dt><dd>AWS EC2·Docker Compose 기반 서비스 배포, 컨테이너 복구와 데이터 영속성 검증</dd></div>
+      <div><dt>OS (Linux, Windows)</dt><dd>Rocky Linux 환경 구축·운영, Windows 로그 모니터링과 시스템 상태 점검</dd></div>
+      <div><dt>AI 활용 개발</dt><dd>의료영상 AI 프로젝트의 그래프 데이터 구축과 백엔드 API·평가·통합 테스트 참여</dd></div>
+    </dl>
+  </section>
+
+
 
   <section class="portfolio-section section-operations" id="operations">
     <p class="eyebrow">01 / OPERATIONS</p>
@@ -25,14 +30,7 @@ layout: default
     {% for post in operation_posts %}{% include portfolio-card.html post=post %}{% endfor %}
   </section>
 
-  <section class="portfolio-section competency-section" aria-labelledby="competency-title">
-    <h2 id="competency-title">경험으로 설명하는 역량</h2>
-    <dl class="competency-list">
-      <div><dt>Server / Linux</dt><dd>전원·링크·인터페이스·서비스를 나누어 장애 상태 확인</dd></div>
-      <div><dt>Storage / Backup</dt><dd>파일 목록 비교, 보존 데이터 분류, 이관 후 공간 확보</dd></div>
-      <div><dt>VM / Change</dt><dd>호스트·VM 현황 조사와 단계별 이관·복구 계획 검토</dd></div>
-    </dl>
-  </section>
+
 
   <section class="portfolio-section section-labs" id="labs">
     <p class="eyebrow">02 / CLOUD LAB</p>
@@ -53,11 +51,4 @@ layout: default
   </section>
 
 
-  {% if site.plainwhite.search %}
-  <div class="posts-labelgroup portfolio-search" id="posts-labelgroup">
-    <h2 id="posts-label">글 검색</h2>
-    <div class="search-container"><div class="search-section"><i class="icon-search" aria-hidden="true"></i><input type="search" id="searchbar" autocomplete="off" placeholder="NAS, Linux, VM…" aria-label="포트폴리오 글 검색"></div><div class="search-results" id="search-results" data-placeholder="검색 결과가 없습니다" style="display:none;"></div></div>
-  </div>
-  {% endif %}
-  <p class="publication-note">실무 사례는 내부 식별 정보를 익명화했습니다. 완료된 조치와 검토·계획 단계의 내용을 구분합니다.</p>
 </div>
